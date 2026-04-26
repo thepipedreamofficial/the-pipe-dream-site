@@ -1,7 +1,7 @@
 export default function Page() {
   const shows = [
     {
-      image: "/obrayswholeband.jpg",
+      image: "/robrayswholeband.jpg",
       date: "June 13",
       venue: "Rob Ray's Taproom",
       location: "Pearland, TX",
