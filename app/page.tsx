@@ -6,6 +6,7 @@ export default function Page() {
       location: "Pearland, TX",
       details: "7-9 PM",
       link: "https://www.robraystaproom.com/",
+      image: "/robrayswholeband.jpg",
     },
     {
       date: "August 1",
