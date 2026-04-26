@@ -1,12 +1,12 @@
 export default function Page() {
   const shows = [
     {
+      image: "/obrayswholeband.jpg",
       date: "June 13",
       venue: "Rob Ray's Taproom",
       location: "Pearland, TX",
       details: "7-9 PM",
       link: "https://www.robraystaproom.com/",
-      image: "/robrayswholeband.jpg",
     },
     {
       date: "August 1",
@@ -19,9 +19,9 @@ export default function Page() {
   ]
 
   const photos = [
-    { image: "/robrays.jpg" },
-    { image: "/wln-stage.jpg" },
-    { image: "/bigtop.jpg" },
+    { image: "/wln-stage.jpg" },     // LEFT
+    { image: "/bigtop.jpg" },        // MIDDLE
+    { image: "/wlnPFClose.jpg" },    // RIGHT (new)
   ];
 
   const links = {
