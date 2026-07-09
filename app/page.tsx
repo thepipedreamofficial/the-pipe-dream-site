@@ -5,7 +5,7 @@ export default function Page() {
       venue: "White Linen Night",
       location: "Heights, Houston TX",
       details: "Outdoor stage • White Linen Night street festival • evening set (6–10 PM window)",
-      link: "https://19thstreetheights.com/",
+      link: "https://www.wlnon19th.com/",
       image: "/WLNcrowd.jpg"
     },
     {
