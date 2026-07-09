@@ -1,20 +1,20 @@
 export default function Page() {
   const shows = [
     {
-      image: "/robrayswholeband.jpg",
-      date: "June 13",
-      venue: "Rob Ray's Taproom",
-      location: "Pearland, TX",
-      details: "7-9 PM",
-      link: "https://www.robraystaproom.com/",
-    },
-    {
       date: "August 1",
       venue: "White Linen Night",
       location: "Heights, Houston TX",
       details: "Outdoor stage • White Linen Night street festival • evening set (6–10 PM window)",
       link: "https://19thstreetheights.com/",
       image: "/WLNcrowd.jpg"
+    },
+    {
+      image: "/robrayswholeband.jpg",
+      date: "September 12",
+      venue: "Rob Ray's Taproom",
+      location: "Pearland, TX",
+      details: "7-9 PM",
+      link: "https://www.robraystaproom.com/",
     },
   ]
 
