@@ -152,31 +152,23 @@ export default function WeldonDemoPage() {
         </div>
 
         <header className={styles.hero}>
-          <div className={styles.heroCopy}>
-            <p className={styles.eyebrow}>The Pipe Dream presents</p>
-            <h1>
-              Hey, I&apos;m <span>Weldon.</span>
-            </h1>
-            <p className={styles.heroLead}>
-              You&apos;re in the band now. Pick a song, make some noise, and help shape tonight&apos;s set.
-            </p>
-            <div className={styles.venuePill}>
-              <span>Tonight</span>
-              <strong>Weldon Live Demo</strong>
-            </div>
-          </div>
-
-          <div className={styles.heroArt}>
-            <div className={styles.stageLight} aria-hidden="true" />
-            <Image
-              alt="Weldon, The Pipe Dream's mascot"
-              className={styles.weldonImage}
-              height={560}
-              priority
-              src="/Weldon.png"
-              width={560}
-            />
-            <p className={styles.bannerNote}>Your final event banner will replace this artwork</p>
+          <Image
+            alt="Weldon, The Pipe Dream's mascot, relaxing at the bar during a live show"
+            className={styles.heroBannerImage}
+            fill
+            priority
+            sizes="(max-width: 680px) 100vw, 680px"
+            src="/weldon-live-banner.png"
+          />
+          <p className={styles.screenReaderBannerText}>
+            Hey, I&apos;m Weldon. Pressure&apos;s down, drinks are flowing, let&apos;s make some noise.
+          </p>
+          <div aria-hidden="true" className={styles.mobileHeroCopy}>
+            <p>Hey, I&apos;m</p>
+            <h1>Weldon.</h1>
+            <span>
+              Pressure&apos;s down, drinks are flowing, let&apos;s make some <strong>noise.</strong>
+            </span>
           </div>
         </header>
 
