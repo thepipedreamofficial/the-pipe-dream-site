@@ -252,21 +252,21 @@ export default function WeldonDemoPage() {
             <Icon name="tip" />
           </div>
           <div className={styles.tipCopy}>
-            <p className={styles.sectionKicker}>Request made?</p>
-            <h2>Buy the band a round.</h2>
+            <p className={styles.sectionKicker}>Weldon is the tip jar</p>
+            <h2>Put some cash in his head.</h2>
             <p>
-              Requests are free. Bribing Weldon is strongly encouraged and helps keep the music going.
+              Requests are free. Toss Weldon a tip if you&apos;re having fun and help keep the music going.
             </p>
           </div>
-          <div className={styles.tipAmounts} aria-label="Example tip amounts">
-            <button disabled type="button">$5</button>
-            <button disabled type="button">$10</button>
-            <button disabled type="button">Dealer&apos;s choice</button>
-          </div>
-          <button className={styles.venmoButton} disabled type="button">
+          <a
+            className={styles.venmoButton}
+            href="https://venmo.com/thepipedreamofficial"
+            rel="noreferrer"
+            target="_blank"
+          >
             Tip the band on Venmo
             <Icon name="arrow" />
-          </button>
+          </a>
         </section>
 
         <footer className={styles.footer}>

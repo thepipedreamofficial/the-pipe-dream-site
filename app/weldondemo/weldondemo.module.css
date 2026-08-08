@@ -339,9 +339,7 @@
 }
 
 .requestButton:disabled,
-.fakeForm button:disabled,
-.tipAmounts button:disabled,
-.venmoButton:disabled {
+.fakeForm button:disabled {
   cursor: default;
   opacity: 1;
 }
@@ -471,23 +469,6 @@
   height: 38px;
 }
 
-.tipAmounts {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 0.8fr 0.8fr 1.4fr;
-  gap: 8px;
-}
-
-.tipAmounts button {
-  min-height: 44px;
-  border: 1px solid rgba(186, 250, 75, 0.32);
-  border-radius: 12px;
-  color: #eaffc6;
-  background: rgba(186, 250, 75, 0.08);
-  font-size: 0.72rem;
-  font-weight: 850;
-}
-
 .venmoButton {
   grid-column: 1 / -1;
   min-height: 52px;
@@ -502,7 +483,20 @@
   box-shadow: inset 0 1px rgba(255, 255, 255, 0.55), 0 8px 18px rgba(0, 0, 0, 0.28);
   font-size: 0.86rem;
   font-weight: 950;
+  text-decoration: none;
   text-transform: uppercase;
+  transition: filter 160ms ease, transform 160ms ease;
+}
+
+.venmoButton:hover,
+.venmoButton:focus-visible {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+}
+
+.venmoButton:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 3px;
 }
 
 .venmoButton .icon {
@@ -781,7 +775,8 @@
     animation: none;
   }
 
-  .actionTile {
+  .actionTile,
+  .venmoButton {
     transition: none;
   }
 }
