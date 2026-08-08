@@ -148,6 +148,7 @@ export default function WeldonDemoPage() {
         <div className={styles.demoBar}>
           <span className={styles.liveDot} aria-hidden="true" />
           <span>Weldon Live</span>
+          <span className={styles.bandIndicator}>The Pipe Dream</span>
           <span className={styles.demoTag}>Concept preview</span>
         </div>
 
