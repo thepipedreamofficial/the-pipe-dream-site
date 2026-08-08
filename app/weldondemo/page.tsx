@@ -248,9 +248,13 @@ export default function WeldonDemoPage() {
         </section>
 
         <section className={styles.tipCard} id="tip-weldon">
-          <div className={styles.tipIconWrap}>
-            <Icon name="tip" />
-          </div>
+          <Image
+            alt="Weldon smiling with cash filling his open head"
+            className={styles.tipMascot}
+            height={220}
+            src="/weldon-head-with-cash.png"
+            width={220}
+          />
           <div className={styles.tipCopy}>
             <p className={styles.sectionKicker}>Weldon is the tip jar</p>
             <h2>Put a few bucks in his head.</h2>
