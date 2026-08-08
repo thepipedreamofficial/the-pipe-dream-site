@@ -184,12 +184,20 @@ export default function WeldonDemoPage() {
 
         <section className={styles.requestCard} id="song-requests">
           <div className={styles.sectionHeading}>
-            <div>
+            <div className={styles.requestHeadingCopy}>
               <p className={styles.sectionKicker}>Your turn</p>
-              <h2>What should we play?</h2>
+              <div className={styles.requestTitleRow}>
+                <h2>What should we play?</h2>
+                <span className={styles.pickPrompt}>
+                  Pick one
+                  <svg aria-hidden="true" className={styles.pickArrow} fill="none" viewBox="0 0 28 38">
+                    <path d="M6 3c8 5 14 12 14 24" stroke="currentColor" strokeLinecap="round" strokeWidth="2.5" />
+                    <path d="M13 23l7 7 6-8" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" />
+                  </svg>
+                </span>
+              </div>
             </div>
             <div className={styles.requestMascotWrap}>
-              <span className={styles.pickPrompt}>Pick one</span>
               <Image
                 alt="Weldon rocking on an electric guitar"
                 className={styles.requestMascot}

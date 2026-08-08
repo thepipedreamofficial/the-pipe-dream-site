@@ -216,7 +216,18 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 4px;
+}
+
+.requestHeadingCopy {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.requestTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 7px;
 }
 
 .sectionHeading h2,
@@ -234,16 +245,24 @@
 }
 
 .pickPrompt {
-  position: absolute;
-  z-index: 2;
-  top: -4px;
-  right: 0;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
   color: var(--gold);
   font-family: Georgia, serif;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-style: italic;
   white-space: nowrap;
   transform: rotate(-4deg);
+}
+
+.pickArrow {
+  width: 20px;
+  height: 31px;
+  margin-top: 12px;
+  display: block;
+  overflow: visible;
 }
 
 .requestMascotWrap {
@@ -260,7 +279,7 @@
   height: auto;
   display: block;
   filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.46));
-  transform: rotate(2deg);
+  transform: translateX(-8px) rotate(2deg);
 }
 
 .songList {
@@ -676,7 +695,43 @@
   }
 
   .requestMascotWrap {
-    width: 82px;
+    width: 70px;
+  }
+
+  .sectionHeading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 70px;
+    gap: 4px;
+  }
+
+  .requestHeadingCopy {
+    position: relative;
+  }
+
+  .requestTitleRow {
+    min-height: 82px;
+    display: block;
+    position: relative;
+  }
+
+  .sectionHeading h2 {
+    font-size: 1.55rem;
+  }
+
+  .pickPrompt {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 0.76rem;
+  }
+
+  .pickArrow {
+    width: 16px;
+    height: 26px;
+  }
+
+  .requestMascot {
+    transform: translateX(-3px) rotate(2deg);
   }
 
   .wildcardCard {
