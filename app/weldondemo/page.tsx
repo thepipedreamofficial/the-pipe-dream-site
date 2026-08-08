@@ -188,7 +188,16 @@ export default function WeldonDemoPage() {
               <p className={styles.sectionKicker}>Your turn</p>
               <h2>What should we play?</h2>
             </div>
-            <span className={styles.pickPrompt}>Pick one</span>
+            <div className={styles.requestMascotWrap}>
+              <span className={styles.pickPrompt}>Pick one</span>
+              <Image
+                alt="Weldon rocking on an electric guitar"
+                className={styles.requestMascot}
+                height={180}
+                src="/weldon-rocking-guitar.png"
+                width={180}
+              />
+            </div>
           </div>
 
           <ol className={styles.songList}>
@@ -212,14 +221,18 @@ export default function WeldonDemoPage() {
         </section>
 
         <section className={styles.wildcardCard} id="wildcard">
-          <div className={styles.wildcardIcon}>
-            <Icon name="guitar" />
-          </div>
           <div className={styles.wildcardCopy}>
             <p className={styles.sectionKicker}>Don&apos;t see your song?</p>
-            <h2>Throw Weldon a wild card.</h2>
+            <h2>Throw them a wild card.</h2>
             <p>Ask for anything. If the band knows it, you might get lucky.</p>
           </div>
+          <Image
+            alt="Weldon looking nervous about a surprise song request"
+            className={styles.wildcardMascot}
+            height={180}
+            src="/weldon-scared-face.png"
+            width={180}
+          />
           <div className={styles.fakeForm}>
             <label htmlFor="wildcard-song">Song or artist</label>
             <div className={styles.inputRow}>
