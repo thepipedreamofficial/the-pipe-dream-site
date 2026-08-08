@@ -292,7 +292,7 @@
   min-height: 70px;
   padding: 10px 4px;
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 10px;
   border-top: 1px solid var(--line);
@@ -300,13 +300,6 @@
 
 .songRow:first-child {
   border-top: 0;
-}
-
-.songNumber {
-  color: #8e8176;
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 0.7rem;
-  font-weight: 800;
 }
 
 .songCopy {
@@ -741,7 +734,7 @@
   }
 
   .songRow {
-    grid-template-columns: 26px minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 8px;
   }
 

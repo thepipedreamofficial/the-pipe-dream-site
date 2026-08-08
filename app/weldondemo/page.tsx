@@ -133,11 +133,11 @@ const actionTiles: Array<{
 ];
 
 const songs = [
-  { title: "Mr. Brightside", detail: "3 songs away", kind: "Coming up" },
-  { title: "Pink Pony Club", detail: "4 songs away", kind: "Coming up" },
-  { title: "All the Small Things", detail: "5 songs away", kind: "Coming up" },
-  { title: "Blinding Lights", detail: "Ready if you want it", kind: "On the bench" },
-  { title: "The Middle", detail: "Ready if you want it", kind: "On the bench" },
+  { title: "Mr. Brightside", artist: "The Killers" },
+  { title: "Pink Pony Club", artist: "Chappell Roan" },
+  { title: "All the Small Things", artist: "blink-182" },
+  { title: "Blinding Lights", artist: "The Weeknd" },
+  { title: "The Middle", artist: "Jimmy Eat World" },
 ];
 
 export default function WeldonDemoPage() {
@@ -209,14 +209,11 @@ export default function WeldonDemoPage() {
           </div>
 
           <ol className={styles.songList}>
-            {songs.map((song, index) => (
+            {songs.map((song) => (
               <li className={styles.songRow} key={song.title}>
-                <span className={styles.songNumber}>{String(index + 1).padStart(2, "0")}</span>
                 <span className={styles.songCopy}>
                   <strong>{song.title}</strong>
-                  <span>
-                    {song.kind} · {song.detail}
-                  </span>
+                  <span>{song.artist}</span>
                 </span>
                 <button className={styles.requestButton} disabled type="button">
                   Request
