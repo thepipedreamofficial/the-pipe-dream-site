@@ -127,7 +127,7 @@
 .actionGrid {
   margin: -18px 14px 0;
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
   position: relative;
   z-index: 3;
@@ -361,6 +361,10 @@
   align-items: center;
   gap: 14px;
   border-color: rgba(255, 196, 46, 0.28);
+}
+
+.requestCard .wildcardCard {
+  margin: 18px 0 0;
 }
 
 .wildcardMascot {
@@ -658,6 +662,11 @@
 
   .actionGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .actionTile:first-child {
+    min-height: 108px;
+    grid-column: 1 / -1;
   }
 
   .actionTile {

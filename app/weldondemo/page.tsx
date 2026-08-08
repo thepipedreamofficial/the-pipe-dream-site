@@ -110,13 +110,6 @@ const actionTiles: Array<{
     tone: styles.tileRed,
   },
   {
-    href: "#wildcard",
-    icon: "guitar",
-    label: "Ask for another",
-    detail: "Try your wild-card pick",
-    tone: styles.tileOrange,
-  },
-  {
     href: "#tonights-vibe",
     icon: "star",
     label: "Tonight's vibe",
@@ -223,28 +216,27 @@ export default function WeldonDemoPage() {
           </ol>
 
           <p className={styles.demoHint}>Demo buttons only — no requests are being sent yet.</p>
-        </section>
-
-        <section className={styles.wildcardCard} id="wildcard">
-          <div className={styles.wildcardCopy}>
-            <p className={styles.sectionKicker}>Don&apos;t see your song?</p>
-            <h2>Throw them a wild card.</h2>
-            <p>Ask for anything. If the band knows it, you might get lucky.</p>
-          </div>
-          <Image
-            alt="Weldon looking nervous about a surprise song request"
-            className={styles.wildcardMascot}
-            height={180}
-            src="/weldon-scared-face.png"
-            width={180}
-          />
-          <div className={styles.fakeForm}>
-            <label htmlFor="wildcard-song">Song or artist</label>
-            <div className={styles.inputRow}>
-              <input disabled id="wildcard-song" placeholder="e.g. Stacy's Mom" type="text" />
-              <button disabled type="button">Ask Weldon</button>
+          <section className={styles.wildcardCard} id="wildcard">
+            <div className={styles.wildcardCopy}>
+              <p className={styles.sectionKicker}>Don&apos;t see your song?</p>
+              <h2>Throw them a wild card.</h2>
+              <p>Ask for anything. If the band knows it, you might get lucky.</p>
             </div>
-          </div>
+            <Image
+              alt="Weldon looking nervous about a surprise song request"
+              className={styles.wildcardMascot}
+              height={180}
+              src="/weldon-scared-face.png"
+              width={180}
+            />
+            <div className={styles.fakeForm}>
+              <label htmlFor="wildcard-song">Song or artist</label>
+              <div className={styles.inputRow}>
+                <input disabled id="wildcard-song" placeholder="e.g. Stacy's Mom" type="text" />
+                <button disabled type="button">Ask Weldon</button>
+              </div>
+            </div>
+          </section>
         </section>
 
         <section className={styles.vibeCard} id="tonights-vibe">
