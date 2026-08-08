@@ -77,6 +77,7 @@
 }
 
 .demoTag {
+  margin-left: auto;
   padding: 5px 8px;
   border: 1px solid rgba(255, 196, 46, 0.35);
   border-radius: 999px;
@@ -84,19 +85,6 @@
   background: rgba(255, 196, 46, 0.08);
   font-size: 0.62rem;
   letter-spacing: 0.08em;
-}
-
-.bandIndicator {
-  margin-left: auto;
-  padding: 5px 9px;
-  border: 1px solid rgba(255, 101, 220, 0.42);
-  border-radius: 999px;
-  color: white;
-  background: linear-gradient(135deg, rgba(188, 54, 166, 0.26), rgba(68, 80, 223, 0.2));
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.08);
-  font-size: 0.62rem;
-  letter-spacing: 0.08em;
-  white-space: nowrap;
 }
 
 .hero {
@@ -255,34 +243,8 @@
   transform: rotate(-4deg);
 }
 
-.sourceNote {
-  margin-top: 16px;
-  padding: 10px 12px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid rgba(255, 196, 46, 0.2);
-  border-radius: 11px;
-  color: #eadcc6;
-  background: rgba(255, 196, 46, 0.07);
-}
-
-.sourceNote .icon {
-  width: 24px;
-  height: 24px;
-  flex: 0 0 auto;
-  color: var(--gold);
-}
-
-.sourceNote p {
-  margin: 0;
-  font-size: 0.72rem;
-  font-weight: 620;
-  line-height: 1.4;
-}
-
 .songList {
-  margin: 16px 0 0;
+  margin: 12px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -690,7 +652,6 @@
     letter-spacing: 0.08em;
   }
 
-  .bandIndicator,
   .demoTag {
     padding: 4px 6px;
     font-size: 0.5rem;

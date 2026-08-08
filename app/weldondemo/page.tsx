@@ -148,7 +148,6 @@ export default function WeldonDemoPage() {
         <div className={styles.demoBar}>
           <span className={styles.liveDot} aria-hidden="true" />
           <span>Weldon Live</span>
-          <span className={styles.bandIndicator}>The Pipe Dream</span>
           <span className={styles.demoTag}>Concept preview</span>
         </div>
 
@@ -190,13 +189,6 @@ export default function WeldonDemoPage() {
               <h2>What should we play?</h2>
             </div>
             <span className={styles.pickPrompt}>Pick one</span>
-          </div>
-
-          <div className={styles.sourceNote}>
-            <Icon name="spark" />
-            <p>
-              Tonight&apos;s choices come from the next three songs and the band&apos;s ready-to-go bench.
-            </p>
           </div>
 
           <ol className={styles.songList}>
