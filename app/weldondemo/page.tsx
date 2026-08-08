@@ -253,10 +253,8 @@ export default function WeldonDemoPage() {
           </div>
           <div className={styles.tipCopy}>
             <p className={styles.sectionKicker}>Weldon is the tip jar</p>
-            <h2>Put some cash in his head.</h2>
-            <p>
-              Requests are free. Toss Weldon a tip if you&apos;re having fun and help keep the music going.
-            </p>
+            <h2>Put a few bucks in his head.</h2>
+            <p>He promises not to spend it all in one place. Venmo works too.</p>
           </div>
           <a
             className={styles.venmoButton}
@@ -264,7 +262,7 @@ export default function WeldonDemoPage() {
             rel="noreferrer"
             target="_blank"
           >
-            Tip the band on Venmo
+            Tip Weldon on Venmo
             <Icon name="arrow" />
           </a>
         </section>
