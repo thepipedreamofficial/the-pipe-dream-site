@@ -12,19 +12,23 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
-  title: "The Pipe Dream",
-  description: "High-energy cover band. All bangers. Book us or buy Weldon a drink.",
+export const metadata: Metadata = {
+  metadataBase: new URL("https://pipedreamband.com"),
+  title: "The Pipe Dream | Houston Cover Band",
+  description:
+    "Five-piece Houston cover band playing crowd favorites from the '90s through today. View upcoming shows or book The Pipe Dream.",
   openGraph: {
-    title: "The Pipe Dream",
-    description: "High-energy cover band. All bangers.",
+    title: "The Pipe Dream | Houston Cover Band",
+    description:
+      "Five-piece Houston cover band playing crowd favorites from the '90s through today.",
     url: "https://pipedreamband.com",
     siteName: "The Pipe Dream",
     images: [
       {
-        url: "/logo.png", // or use a better image below
-        width: 1200,
-        height: 630,
+        url: "/gallery/gallery-taproom-wide.webp",
+        width: 1600,
+        height: 1067,
+        alt: "The Pipe Dream performing live in Houston",
       },
     ],
     type: "website",
