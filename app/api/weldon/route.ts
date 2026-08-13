@@ -1,10 +1,11 @@
-const DEFAULT_HEIST_WELDON_API_URL = "https://portal.pipedreamband.com/api/weldon";
+import { heistApiUrl } from "../../../lib/server-environment.mjs";
+
 const NO_STORE_HEADERS = { "Cache-Control": "no-store, max-age=0" };
 
 export const dynamic = "force-dynamic";
 
 function upstreamBase() {
-  return (process.env.HEIST_WELDON_API_URL || DEFAULT_HEIST_WELDON_API_URL).replace(/\/+$/, "");
+  return heistApiUrl("/api/weldon");
 }
 
 function limitedHeader(request: Request, name: string, maximum: number) {

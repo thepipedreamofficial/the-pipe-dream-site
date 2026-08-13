@@ -1,10 +1,11 @@
-const DEFAULT_HEIST_TEST_API_URL = "https://portal.pipedreamband.com/api/weldon-test/public";
+import { heistApiUrl } from "../../../lib/server-environment.mjs";
+
 const NO_STORE_HEADERS = { "Cache-Control": "no-store, max-age=0" };
 
 export const dynamic = "force-dynamic";
 
 function upstreamUrl() {
-  return (process.env.HEIST_WELDON_TEST_API_URL || DEFAULT_HEIST_TEST_API_URL).trim();
+  return heistApiUrl("/api/weldon-test/public");
 }
 
 function clientId(request: Request) {

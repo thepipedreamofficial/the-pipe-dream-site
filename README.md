@@ -11,6 +11,29 @@ The public website for The Pipe Dream, including the live Weldon song-request ex
 
 Run `npm run check:routing` before any push or deployment. The Vercel production build runs the same routing guard and will reject a retired or unexpected repository owner.
 
+## Environment routing
+
+The Weldon route handlers call Heist server-to-server. Their upstream is selected by deployment environment and is never exposed to browser JavaScript.
+
+| Public environment | Public origin | Heist origin |
+| --- | --- | --- |
+| Production | `https://pipedreamband.com` | `https://portal.pipedreamband.com` |
+| Staging project / Vercel Preview | `https://staging.pipedreamband.com` | `https://staging.portal.pipedreamband.com` |
+
+Production retains its existing defaults when the environment variables are omitted. Staging and every Vercel Preview deployment fail closed unless all three values are explicitly configured:
+
+```text
+PUBLIC_SITE_ENVIRONMENT=staging
+PUBLIC_SITE_ORIGIN=https://staging.pipedreamband.com
+HEIST_API_ORIGIN=https://staging.portal.pipedreamband.com
+```
+
+Configure these values on the dedicated Vercel staging project (`the-pipe-dream-site-staging`, project ID `prj_DF2tKJXVwjcejGyz8UtaFJv8TVZA`) and on any Preview environment that should use staging. The staging project's `staging` branch deploys with `VERCEL_ENV=production`; that combination is accepted only when Vercel supplies this exact project ID. The Mataway LLC production project and every unknown production project are forbidden from claiming the staging environment. Never set `VERCEL_PROJECT_ID` manually.
+
+Never configure a Preview deployment with the production Heist origin. Run `npm run check:environment` to validate the environment contract; `npm run build` runs both repository and environment routing guards automatically.
+
+For local development, copy `.env.example` to `.env.local`. With no upstream variables configured, local development preserves the prior behavior and calls production Heist. Set all three staging values above when locally testing staging instead.
+
 ## Getting Started
 
 First, run the development server:
