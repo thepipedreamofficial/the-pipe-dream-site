@@ -58,14 +58,18 @@
 }
 
 .hero {
-  aspect-ratio: 3 / 1;
   position: relative;
   overflow: hidden;
   border-bottom: 1px solid rgba(255, 196, 46, 0.24);
   background: #08050d;
 }
 
-.heroImage { object-fit: cover; }
+.heroImage {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: contain;
+}
 
 .gigCard,
 .requestCard,
@@ -304,8 +308,6 @@
 @media (max-width: 420px) {
   .liveBar { padding-inline: 11px; font-size: 0.64rem; letter-spacing: 0.09em; }
   .testTag { padding: 4px 6px; font-size: 0.5rem; }
-  .hero { min-height: 144px; aspect-ratio: 2.25 / 1; }
-  .heroImage { object-fit: cover; object-position: center; }
   .requestHeading { grid-template-columns: minmax(0, 1fr) 76px; }
   .songRow { gap: 7px; }
   .requestButton,

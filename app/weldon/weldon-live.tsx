@@ -209,10 +209,11 @@ export default function WeldonLive({ testMode = false }: { testMode?: boolean })
           <Image
             alt="Weldon relaxing at the bar during a live show"
             className={styles.heroImage}
-            fill
+            height={683}
             priority
             sizes="(max-width: 680px) 100vw, 680px"
             src="/weldon-live-banner.png"
+            width={2048}
           />
         </header>
 
