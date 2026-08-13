@@ -15,6 +15,7 @@ type RequestableSong = {
 
 type WeldonSession = {
   active: boolean;
+  stagingOffline?: boolean;
   sessionId?: string;
   gig?: {
     name?: string;
@@ -99,6 +100,7 @@ function normalizeSession(value: unknown): WeldonSession {
   };
   return {
     active,
+    stagingOffline: nested.stagingOffline === true,
     sessionId: stringValue(nested.sessionId || nested.sessionKey || nested.gigStartedAt),
     gig,
     songs,
@@ -217,8 +219,14 @@ export default function WeldonLive({ testMode = false }: { testMode?: boolean })
         />
         <div className={styles.restShade} aria-hidden="true" />
         <section className={styles.restMessage}>
-          <p>{testMode ? "Weldon Test" : "Weldon Live"}</p>
-          <h1>{testMode ? "Waiting for Phil to start the test live session" : "Weldon is taking a rest right now"}</h1>
+          <p>{session.stagingOffline ? "Weldon Staging" : testMode ? "Weldon Test" : "Weldon Live"}</p>
+          <h1>
+            {session.stagingOffline
+              ? "Weldon staging is offline right now"
+              : testMode
+                ? "Waiting for Phil to start the test live session"
+                : "Weldon is taking a rest right now"}
+          </h1>
           <Link href="/">Visit The Pipe Dream <Icon name="arrow" /></Link>
         </section>
       </main>

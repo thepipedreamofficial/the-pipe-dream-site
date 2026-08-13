@@ -1,4 +1,4 @@
-import { heistApiUrl } from "../../../lib/server-environment.mjs";
+import { environmentRouting, heistApiUrl } from "../../../lib/server-environment.mjs";
 
 const NO_STORE_HEADERS = { "Cache-Control": "no-store, max-age=0" };
 
@@ -10,6 +10,23 @@ function upstreamBase() {
 
 function limitedHeader(request: Request, name: string, maximum: number) {
   return (request.headers.get(name) || "").trim().slice(0, maximum);
+}
+
+function stagingOffline() {
+  return environmentRouting().environment === "staging";
+}
+
+function stagingOfflineResponse(method: "GET" | "POST") {
+  if (method === "GET") {
+    return Response.json(
+      { active: false, songs: [], stagingOffline: true },
+      { status: 200, headers: NO_STORE_HEADERS },
+    );
+  }
+  return Response.json(
+    { error: "Weldon staging is offline. Resume staging and try again.", stagingOffline: true },
+    { status: 503, headers: NO_STORE_HEADERS },
+  );
 }
 
 async function upstreamResponse(response: Response) {
@@ -33,8 +50,10 @@ export async function GET(request: Request) {
       },
       signal: AbortSignal.timeout(8_000),
     });
+    if (stagingOffline() && response.status >= 500) return stagingOfflineResponse("GET");
     return upstreamResponse(response);
   } catch {
+    if (stagingOffline()) return stagingOfflineResponse("GET");
     return Response.json(
       { active: false, songs: [], error: "Weldon Live is temporarily unavailable" },
       { status: 503, headers: NO_STORE_HEADERS },
@@ -68,8 +87,10 @@ export async function POST(request: Request) {
       body: JSON.stringify({ sessionId, songId: input.songId, visitorId: clientId }),
       signal: AbortSignal.timeout(8_000),
     });
+    if (stagingOffline() && response.status >= 500) return stagingOfflineResponse("POST");
     return upstreamResponse(response);
   } catch {
+    if (stagingOffline()) return stagingOfflineResponse("POST");
     return Response.json(
       { error: "Weldon could not send that request. Try again in a moment." },
       { status: 503, headers: NO_STORE_HEADERS },
