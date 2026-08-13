@@ -9,7 +9,6 @@ type RequestableSong = {
   id: number | string;
   title: string;
   artist: string;
-  source?: string;
   requestCount?: number;
   requested?: boolean;
 };
@@ -29,6 +28,7 @@ type WeldonSession = {
 
 const POLL_INTERVAL = 5_000;
 const CLIENT_ID_KEY = "weldon-live-client-id";
+const SONG_TITLE_COLLATOR = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
 
 function stringValue(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
@@ -56,7 +56,6 @@ function normalizeSong(value: unknown): RequestableSong | null {
     id,
     title,
     artist: stringValue(song.artist),
-    source: stringValue(song.source || song.section),
     requestCount: Number.isFinite(Number(song.requestCount))
       ? Number(song.requestCount)
       : undefined,
@@ -74,7 +73,10 @@ function normalizeSession(value: unknown): WeldonSession {
   const active = nested.active === true || status === "live" || action === "start" || action === "card";
   const sourceSongs = nested.songs ?? nested.requestableSongs ?? nested.eligibleSongs;
   const songs = Array.isArray(sourceSongs)
-    ? sourceSongs.map(normalizeSong).filter((song): song is RequestableSong => Boolean(song))
+    ? sourceSongs
+      .map(normalizeSong)
+      .filter((song): song is RequestableSong => Boolean(song))
+      .sort((left, right) => SONG_TITLE_COLLATOR.compare(left.title, right.title))
     : [];
   const rawGig = nested.gig && typeof nested.gig === "object"
     ? (nested.gig as Record<string, unknown>)
@@ -310,7 +312,7 @@ export default function WeldonLive({ testMode = false }: { testMode?: boolean })
                   <li className={styles.songRow} key={String(song.id)}>
                     <span className={styles.songCopy}>
                       <strong>{song.title}</strong>
-                      <span>{[song.artist, song.source].filter(Boolean).join(" · ")}</span>
+                      {song.artist ? <span>{song.artist}</span> : null}
                       {song.requestCount ? <small>{song.requestCount} crowd request{song.requestCount === 1 ? "" : "s"}</small> : null}
                     </span>
                     <button
