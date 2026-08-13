@@ -1,11 +1,15 @@
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
+import {
+  PRODUCTION_VERCEL_PROJECT_ID,
+  STAGING_VERCEL_PROJECT_ID,
+  environmentRouting,
+} from "../lib/server-environment.mjs";
 
 const EXPECTED_REPOSITORY = "matawayllc/the-pipe-dream-site";
 const EXPECTED_OWNER = "matawayllc";
 const EXPECTED_SLUG = "the-pipe-dream-site";
 const EXPECTED_VERCEL_ORG = "team_tqhy8d1nlmvdo7uhjlig8bf9";
-const EXPECTED_VERCEL_PROJECT = "prj_m2qyrn6dszvjbyumdtnbgg2ursry";
 const RETIRED_OWNER = "thepipedreamofficial";
 
 function normalized(value) {
@@ -28,6 +32,35 @@ function localOrigin() {
     return "";
   }
 }
+
+function allowedVercelProjects(environment, vercelEnvironment) {
+  if (environment !== "staging") return new Set([normalized(PRODUCTION_VERCEL_PROJECT_ID)]);
+  if (vercelEnvironment === "production") return new Set([normalized(STAGING_VERCEL_PROJECT_ID)]);
+  return new Set([
+    normalized(PRODUCTION_VERCEL_PROJECT_ID),
+    normalized(STAGING_VERCEL_PROJECT_ID),
+  ]);
+}
+
+function verifyProjectMatrix() {
+  const production = allowedVercelProjects("production", "production");
+  const stagingProduction = allowedVercelProjects("staging", "production");
+  const stagingPreview = allowedVercelProjects("staging", "preview");
+  if (!production.has(normalized(PRODUCTION_VERCEL_PROJECT_ID)) || production.has(normalized(STAGING_VERCEL_PROJECT_ID))) {
+    throw new Error("Production Vercel project authorization matrix is invalid");
+  }
+  if (!stagingProduction.has(normalized(STAGING_VERCEL_PROJECT_ID)) || stagingProduction.has(normalized(PRODUCTION_VERCEL_PROJECT_ID))) {
+    throw new Error("Staging production project authorization matrix is invalid");
+  }
+  if (!stagingPreview.has(normalized(PRODUCTION_VERCEL_PROJECT_ID)) || !stagingPreview.has(normalized(STAGING_VERCEL_PROJECT_ID))) {
+    throw new Error("Staging Preview project authorization matrix is invalid");
+  }
+}
+
+verifyProjectMatrix();
+const environment = environmentRouting(process.env).environment;
+const vercelEnvironment = normalized(process.env.VERCEL_ENV);
+const allowedProjectIds = allowedVercelProjects(environment, vercelEnvironment);
 
 const errors = [];
 const checks = [];
@@ -62,11 +95,19 @@ if (vercelOwner || vercelSlug) {
   }
 }
 
+const runtimeVercelProjectId = normalized(process.env.VERCEL_PROJECT_ID);
+if (runtimeVercelProjectId) {
+  checks.push(`Vercel runtime project ${runtimeVercelProjectId} (${environment})`);
+  if (!allowedProjectIds.has(runtimeVercelProjectId)) {
+    errors.push(`Vercel runtime project ${runtimeVercelProjectId} is not authorized for ${environment}`);
+  }
+}
+
 try {
   const project = JSON.parse(readFileSync(".vercel/project.json", "utf8"));
   checks.push(`Vercel project ${normalized(project.orgId)}/${normalized(project.projectId)}`);
-  if (normalized(project.orgId) !== EXPECTED_VERCEL_ORG || normalized(project.projectId) !== EXPECTED_VERCEL_PROJECT) {
-    errors.push("Local Vercel link does not target the Mataway LLC public-site project");
+  if (normalized(project.orgId) !== EXPECTED_VERCEL_ORG || !allowedProjectIds.has(normalized(project.projectId))) {
+    errors.push(`Local Vercel link is not authorized for the ${environment} public-site environment`);
   }
 } catch (error) {
   if (error?.code !== "ENOENT") errors.push("Could not validate .vercel/project.json");
