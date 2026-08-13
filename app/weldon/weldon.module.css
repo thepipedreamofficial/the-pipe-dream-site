@@ -73,6 +73,7 @@
 
 .gigCard,
 .requestCard,
+.venueCard,
 .tipCard {
   margin: 18px 14px 0;
   border: 1px solid var(--line);
@@ -106,7 +107,8 @@
 }
 
 .gigCard > span,
-.requestHeading > div > span {
+.requestHeading > div > span,
+.venueCard > div > span {
   margin-top: 9px;
   display: block;
   color: var(--muted);
@@ -114,7 +116,71 @@
   line-height: 1.45;
 }
 
+.actionGrid {
+  margin: 12px 14px 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.actionButton {
+  min-width: 0;
+  min-height: 72px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 14px;
+  color: white;
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.23), 0 9px 20px rgba(0, 0, 0, 0.3);
+  font-size: 0.72rem;
+  font-weight: 950;
+  line-height: 1.15;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.actionButton .icon {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  font-size: 1.05rem;
+}
+
+.requestAction {
+  min-height: 64px;
+  grid-column: 1 / -1;
+  background: linear-gradient(145deg, #ff623c, #c52d25);
+}
+
+.tipAction { background: linear-gradient(145deg, #69c745, #2c6c25); }
+.venueAction { background: linear-gradient(145deg, #cc3cad, #6f1b78); }
+.disabledAction { cursor: default; filter: grayscale(0.72); opacity: 0.46; }
+
+.actionButton:not(.disabledAction):hover,
+.actionButton:not(.disabledAction):focus-visible,
+.venueCard a:hover,
+.venueCard a:focus-visible {
+  filter: brightness(1.1);
+}
+
+.actionButton:focus-visible,
+.venueCard a:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 3px;
+}
+
 .requestCard { padding: 20px 16px 14px; }
+.requestCard,
+.venueCard,
+.tipCard { scroll-margin-top: 12px; }
 .requestHeading {
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(82px, 24vw, 116px);
@@ -180,6 +246,56 @@
 .emptySongs span { font-size: 0.74rem; }
 .emptySongs .icon { color: var(--gold); font-size: 2rem; }
 .notice { min-height: 1.2rem; margin: 9px 2px 0; color: #c8ff67; font-size: 0.7rem; line-height: 1.4; }
+
+.venueCard {
+  padding: 20px;
+  display: grid;
+  gap: 16px;
+  border-color: rgba(221, 90, 203, 0.38);
+  background:
+    radial-gradient(circle at 96% 5%, rgba(201, 51, 166, 0.3), transparent 11rem),
+    linear-gradient(145deg, #321329, #17100e 72%);
+}
+
+.venueCard p {
+  margin: 0 0 7px;
+  color: #ff83df;
+  font-size: 0.69rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.venueCard h2 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: white;
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: clamp(1.55rem, 6vw, 2.2rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.venueCard > div > span {
+  white-space: pre-wrap;
+}
+
+.venueCard > a {
+  min-height: 50px;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 13px;
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-decoration: none;
+  text-transform: uppercase;
+}
 
 .tipCard {
   padding: 18px;
@@ -314,11 +430,14 @@
   .requestedButton { padding-inline: 10px; font-size: 0.61rem; }
   .tipCard { grid-template-columns: 76px minmax(0, 1fr); }
   .tipCard > img { width: 76px; }
+  .actionButton { padding-inline: 8px; font-size: 0.66rem; }
 }
 
 @media (min-width: 681px) {
   .livePanel { min-height: calc(100svh - 60px); margin-block: 30px; overflow: hidden; border: 1px solid var(--line); border-radius: 32px; }
   .restImage { object-fit: contain; background: #030914; }
+  .actionGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .requestAction { min-height: 72px; grid-column: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -17,7 +17,13 @@ type RequestableSong = {
 type WeldonSession = {
   active: boolean;
   sessionId?: string;
-  gig?: { name?: string; venue?: string; date?: string };
+  gig?: {
+    name?: string;
+    venue?: string;
+    date?: string;
+    venueInfoText?: string;
+    venueInfoUrl?: string;
+  };
   songs: RequestableSong[];
 };
 
@@ -26,6 +32,18 @@ const CLIENT_ID_KEY = "weldon-live-client-id";
 
 function stringValue(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function safeHttpUrl(value: unknown) {
+  const rawUrl = stringValue(value);
+  if (!rawUrl) return "";
+  const candidate = /^[a-z][a-z\d+.-]*:/i.test(rawUrl) ? rawUrl : `https://${rawUrl}`;
+  try {
+    const url = new URL(candidate);
+    return url.protocol === "http:" || url.protocol === "https:" ? url.toString() : "";
+  } catch {
+    return "";
+  }
 }
 
 function normalizeSong(value: unknown): RequestableSong | null {
@@ -65,6 +83,17 @@ function normalizeSession(value: unknown): WeldonSession {
     name: stringValue(rawGig.name || rawGig.gigName || nested.gigName),
     venue: stringValue(rawGig.venue || rawGig.location || nested.venue),
     date: stringValue(rawGig.date || nested.date),
+    venueInfoText: stringValue(
+      rawGig.venueInfoText || rawGig.venue_info_text || nested.venueInfoText || nested.venue_info_text,
+    ),
+    venueInfoUrl: safeHttpUrl(
+      rawGig.venueInfoUrl
+      || rawGig.venue_info_url
+      || rawGig.venueWebsiteUrl
+      || rawGig.venueWebsite
+      || nested.venueInfoUrl
+      || nested.venue_info_url,
+    ),
   };
   return {
     active,
@@ -82,9 +111,10 @@ function clientIdFromBrowser() {
   return clientId;
 }
 
-function Icon({ name }: { name: "music" | "tip" | "instagram" | "arrow" }) {
+function Icon({ name }: { name: "music" | "tip" | "venue" | "instagram" | "arrow" }) {
   if (name === "music") return <span aria-hidden="true" className={styles.icon}>♫</span>;
   if (name === "tip") return <span aria-hidden="true" className={styles.icon}>$</span>;
+  if (name === "venue") return <span aria-hidden="true" className={styles.icon}>⌖</span>;
   if (name === "instagram") return <span aria-hidden="true" className={styles.icon}>◎</span>;
   return <span aria-hidden="true" className={styles.arrow}>→</span>;
 }
@@ -195,6 +225,9 @@ export default function WeldonLive({ testMode = false }: { testMode?: boolean })
 
   const gigTitle = session.gig?.name || "The Pipe Dream is live";
   const gigDetails = [session.gig?.venue, session.gig?.date].filter(Boolean).join(" · ");
+  const venueInfoText = session.gig?.venueInfoText || "";
+  const venueInfoUrl = session.gig?.venueInfoUrl || "";
+  const venueActionHref = venueInfoText ? "#venue-info" : venueInfoUrl;
 
   return (
     <main className={styles.pageShell}>
@@ -223,7 +256,37 @@ export default function WeldonLive({ testMode = false }: { testMode?: boolean })
           {gigDetails ? <span>{gigDetails}</span> : null}
         </section>
 
-        <section className={styles.requestCard}>
+        <nav aria-label="Weldon Live options" className={styles.actionGrid}>
+          <a className={`${styles.actionButton} ${styles.requestAction}`} href="#song-requests">
+            <Icon name="music" />
+            <span>Request a song</span>
+          </a>
+          <a className={`${styles.actionButton} ${styles.tipAction}`} href="#tip-band">
+            <Icon name="tip" />
+            <span>Tip the band</span>
+          </a>
+          {venueActionHref ? (
+            <a
+              className={`${styles.actionButton} ${styles.venueAction}`}
+              href={venueActionHref}
+              rel={venueInfoText ? undefined : "noreferrer"}
+              target={venueInfoText ? undefined : "_blank"}
+            >
+              <Icon name="venue" />
+              <span>Venue info</span>
+            </a>
+          ) : (
+            <span
+              aria-disabled="true"
+              className={`${styles.actionButton} ${styles.venueAction} ${styles.disabledAction}`}
+            >
+              <Icon name="venue" />
+              <span>Venue info</span>
+            </span>
+          )}
+        </nav>
+
+        <section className={styles.requestCard} id="song-requests">
           <div className={styles.requestHeading}>
             <div>
               <p>Your turn</p>
@@ -272,7 +335,22 @@ export default function WeldonLive({ testMode = false }: { testMode?: boolean })
           <p className={styles.notice} aria-live="polite">{notice}</p>
         </section>
 
-        <section className={styles.tipCard}>
+        {venueInfoText ? (
+          <section className={styles.venueCard} id="venue-info">
+            <div>
+              <p>Venue info</p>
+              <h2>{session.gig?.venue || "Tonight’s venue"}</h2>
+              <span>{venueInfoText}</span>
+            </div>
+            {venueInfoUrl ? (
+              <a href={venueInfoUrl} rel="noreferrer" target="_blank">
+                Visit venue website <Icon name="arrow" />
+              </a>
+            ) : null}
+          </section>
+        ) : null}
+
+        <section className={styles.tipCard} id="tip-band">
           <Image
             alt="Weldon smiling with cash filling his open head"
             height={180}
