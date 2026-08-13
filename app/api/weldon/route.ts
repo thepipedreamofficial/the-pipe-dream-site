@@ -7,12 +7,6 @@ function upstreamBase() {
   return (process.env.HEIST_WELDON_API_URL || DEFAULT_HEIST_WELDON_API_URL).replace(/\/+$/, "");
 }
 
-function upstreamUrl(testToken: string) {
-  if (!testToken) return upstreamBase();
-  const configured = (process.env.HEIST_WELDON_TEST_API_URL || "").trim();
-  return configured || new URL("/api/weldon-test/public", upstreamBase()).toString();
-}
-
 function limitedHeader(request: Request, name: string, maximum: number) {
   return (request.headers.get(name) || "").trim().slice(0, maximum);
 }
@@ -26,16 +20,14 @@ async function upstreamResponse(response: Response) {
 }
 
 export async function GET(request: Request) {
-  const testToken = limitedHeader(request, "x-weldon-test-token", 256);
   const clientId = limitedHeader(request, "x-weldon-client-id", 128);
-  const url = new URL(upstreamUrl(testToken));
-  if (!testToken && clientId) url.searchParams.set("visitorId", clientId);
+  const url = new URL(upstreamBase());
+  if (clientId) url.searchParams.set("visitorId", clientId);
   try {
     const response = await fetch(url, {
       cache: "no-store",
       headers: {
         Accept: "application/json",
-        ...(testToken ? { "X-Weldon-Test-Token": testToken } : {}),
         ...(clientId ? { "X-Weldon-Client-Id": clientId } : {}),
       },
       signal: AbortSignal.timeout(8_000),
@@ -50,7 +42,6 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const testToken = limitedHeader(request, "x-weldon-test-token", 256);
   const clientId = limitedHeader(request, "x-weldon-client-id", 128);
   let input: { songId?: unknown; sessionId?: unknown };
   try {
@@ -62,21 +53,18 @@ export async function POST(request: Request) {
     return Response.json({ error: "Choose a valid song" }, { status: 400, headers: NO_STORE_HEADERS });
   }
   const sessionId = typeof input.sessionId === "string" ? input.sessionId.trim().slice(0, 160) : "";
-  if (!testToken && (!sessionId || !clientId)) {
+  if (!sessionId || !clientId) {
     return Response.json({ error: "Refresh Weldon Live and choose the song again" }, { status: 409, headers: NO_STORE_HEADERS });
   }
   try {
-    const response = await fetch(upstreamUrl(testToken), {
+    const response = await fetch(upstreamBase(), {
       method: "POST",
       cache: "no-store",
       headers: {
         "Content-Type": "application/json",
-        ...(testToken ? { "X-Weldon-Test-Token": testToken } : {}),
         ...(clientId ? { "X-Weldon-Client-Id": clientId } : {}),
       },
-      body: JSON.stringify(testToken
-        ? { songId: input.songId }
-        : { sessionId, songId: input.songId, visitorId: clientId }),
+      body: JSON.stringify({ sessionId, songId: input.songId, visitorId: clientId }),
       signal: AbortSignal.timeout(8_000),
     });
     return upstreamResponse(response);

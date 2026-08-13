@@ -22,7 +22,6 @@ type WeldonSession = {
 };
 
 const POLL_INTERVAL = 5_000;
-const TEST_TOKEN_KEY = "weldon-live-test-token";
 const CLIENT_ID_KEY = "weldon-live-client-id";
 
 function stringValue(value: unknown) {
@@ -75,17 +74,6 @@ function normalizeSession(value: unknown): WeldonSession {
   };
 }
 
-function testTokenFromBrowser() {
-  const params = new URLSearchParams(window.location.hash.replace(/^#/, ""));
-  const token = stringValue(params.get("test"));
-  if (token) {
-    sessionStorage.setItem(TEST_TOKEN_KEY, token);
-    window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
-    return token;
-  }
-  return stringValue(sessionStorage.getItem(TEST_TOKEN_KEY));
-}
-
 function clientIdFromBrowser() {
   const existing = stringValue(sessionStorage.getItem(CLIENT_ID_KEY));
   if (existing) return existing;
@@ -101,44 +89,41 @@ function Icon({ name }: { name: "music" | "tip" | "instagram" | "arrow" }) {
   return <span aria-hidden="true" className={styles.arrow}>→</span>;
 }
 
-export default function WeldonLive() {
+export default function WeldonLive({ testMode = false }: { testMode?: boolean }) {
   const [session, setSession] = useState<WeldonSession | null>(null);
-  const [testMode, setTestMode] = useState(false);
   const [requested, setRequested] = useState<Array<number | string>>([]);
   const [pendingSongId, setPendingSongId] = useState<number | string | null>(null);
   const [notice, setNotice] = useState("");
   const previousSessionId = useRef("");
-  const requestContext = useRef({ testToken: "", clientId: "" });
+  const requestContext = useRef({ clientId: "" });
+  const endpoint = testMode ? "/api/weldontest" : "/api/weldon";
 
-  const loadSession = useCallback(async (token: string, id: string) => {
-    const response = await fetch("/api/weldon", {
+  const loadSession = useCallback(async (id: string) => {
+    const response = await fetch(endpoint, {
       cache: "no-store",
       headers: {
         Accept: "application/json",
-        ...(token ? { "X-Weldon-Test-Token": token } : {}),
         ...(id ? { "X-Weldon-Client-Id": id } : {}),
       },
     });
     if (!response.ok) throw new Error("Weldon Live is temporarily unavailable");
     const nextSession = normalizeSession(await response.json());
-    setTestMode(Boolean(token));
     setSession(nextSession);
     if (previousSessionId.current && previousSessionId.current !== nextSession.sessionId) {
       setRequested([]);
       setNotice("");
     }
     previousSessionId.current = nextSession.sessionId || "";
-  }, []);
+  }, [endpoint]);
 
   useEffect(() => {
-    const token = testTokenFromBrowser();
     const id = clientIdFromBrowser();
-    requestContext.current = { testToken: token, clientId: id };
+    requestContext.current = { clientId: id };
     let stopped = false;
     let timer = 0;
     const poll = async () => {
       try {
-        await loadSession(token, id);
+        await loadSession(id);
       } catch {
         if (!stopped) setSession({ active: false, songs: [] });
       } finally {
@@ -156,13 +141,12 @@ export default function WeldonLive() {
     if (pendingSongId !== null || requested.includes(song.id)) return;
     setPendingSongId(song.id);
     setNotice("");
-    const { testToken, clientId } = requestContext.current;
+    const { clientId } = requestContext.current;
     try {
-      const response = await fetch("/api/weldon", {
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(testToken ? { "X-Weldon-Test-Token": testToken } : {}),
           ...(clientId ? { "X-Weldon-Client-Id": clientId } : {}),
         },
         body: JSON.stringify({ songId: song.id, sessionId: session?.sessionId || "" }),
@@ -171,7 +155,7 @@ export default function WeldonLive() {
       if (!response.ok) throw new Error(stringValue(result.error) || "That request could not be sent");
       setRequested((current) => [...current, song.id]);
       setNotice(`“${song.title}” is with the band. Requests are suggestions, so keep your fingers crossed.`);
-      await loadSession(testToken, clientId).catch(() => undefined);
+      await loadSession(clientId).catch(() => undefined);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "That request could not be sent");
     } finally {
@@ -201,8 +185,8 @@ export default function WeldonLive() {
         />
         <div className={styles.restShade} aria-hidden="true" />
         <section className={styles.restMessage}>
-          <p>Weldon Live</p>
-          <h1>Weldon is taking a rest right now</h1>
+          <p>{testMode ? "Weldon Test" : "Weldon Live"}</p>
+          <h1>{testMode ? "Waiting for Phil to start the test live session" : "Weldon is taking a rest right now"}</h1>
           <Link href="/">Visit The Pipe Dream <Icon name="arrow" /></Link>
         </section>
       </main>
