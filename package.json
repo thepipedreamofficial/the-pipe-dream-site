@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run check:routing && next build",
+    "check:routing": "node scripts/check-repository-routing.mjs",
     "start": "next start",
     "lint": "eslint"
   },

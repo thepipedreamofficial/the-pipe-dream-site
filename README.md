@@ -1,4 +1,15 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Pipe Dream public site
+
+The public website for The Pipe Dream, including the live Weldon song-request experience.
+
+## Production routing
+
+- GitHub: `matawayllc/the-pipe-dream-site` (`main`)
+- Vercel: `matawayllc/the-pipe-dream-site`
+- Production: `pipedreamband.com` and `www.pipedreamband.com`
+- Heist API: `https://portal.pipedreamband.com`
+
+Run `npm run check:routing` before any push or deployment. The Vercel production build runs the same routing guard and will reject a retired or unexpected repository owner.
 
 ## Getting Started
 
