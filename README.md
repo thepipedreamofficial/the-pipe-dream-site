@@ -18,14 +18,14 @@ The Weldon route handlers call Heist server-to-server. Their upstream is selecte
 | Public environment | Public origin | Heist origin |
 | --- | --- | --- |
 | Production | `https://pipedreamband.com` | `https://portal.pipedreamband.com` |
-| Staging project / Vercel Preview | `https://staging.pipedreamband.com` | `https://staging.portal.pipedreamband.com` |
+| Staging project / Vercel Preview | `https://the-pipe-dream-site-staging.vercel.app` | `https://pipe-dream-band-portal-staging.vercel.app` |
 
 Production retains its existing defaults when the environment variables are omitted. Staging and every Vercel Preview deployment fail closed unless all three values are explicitly configured:
 
 ```text
 PUBLIC_SITE_ENVIRONMENT=staging
-PUBLIC_SITE_ORIGIN=https://staging.pipedreamband.com
-HEIST_API_ORIGIN=https://staging.portal.pipedreamband.com
+PUBLIC_SITE_ORIGIN=https://the-pipe-dream-site-staging.vercel.app
+HEIST_API_ORIGIN=https://pipe-dream-band-portal-staging.vercel.app
 ```
 
 Configure these values on the dedicated Vercel staging project (`the-pipe-dream-site-staging`, project ID `prj_DF2tKJXVwjcejGyz8UtaFJv8TVZA`) and on any Preview environment that should use staging. The staging project's `staging` branch deploys with `VERCEL_ENV=production`; that combination is accepted only when Vercel supplies this exact project ID. The Mataway LLC production project and every unknown production project are forbidden from claiming the staging environment. Never set `VERCEL_PROJECT_ID` manually.
