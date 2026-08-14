@@ -46,17 +46,6 @@
   animation: pulse 1.8s ease-in-out infinite;
 }
 
-.testTag {
-  margin-left: auto;
-  padding: 5px 8px;
-  border: 1px solid rgba(255, 196, 46, 0.35);
-  border-radius: 999px;
-  color: white;
-  background: rgba(255, 196, 46, 0.1);
-  font-size: 0.58rem;
-  letter-spacing: 0.06em;
-}
-
 .hero {
   position: relative;
   overflow: hidden;
@@ -423,7 +412,6 @@
 
 @media (max-width: 420px) {
   .liveBar { padding-inline: 11px; font-size: 0.64rem; letter-spacing: 0.09em; }
-  .testTag { padding: 4px 6px; font-size: 0.5rem; }
   .requestHeading { grid-template-columns: minmax(0, 1fr) 76px; }
   .songRow { gap: 7px; }
   .requestButton,
