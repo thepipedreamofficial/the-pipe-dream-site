@@ -121,14 +121,14 @@ function Icon({ name }: { name: "music" | "tip" | "venue" | "instagram" | "arrow
   return <span aria-hidden="true" className={styles.arrow}>→</span>;
 }
 
-export default function WeldonLive({ testMode = false }: { testMode?: boolean }) {
+export default function WeldonLive() {
   const [session, setSession] = useState<WeldonSession | null>(null);
   const [requested, setRequested] = useState<Array<number | string>>([]);
   const [pendingSongId, setPendingSongId] = useState<number | string | null>(null);
   const [notice, setNotice] = useState("");
   const previousSessionId = useRef("");
   const requestContext = useRef({ clientId: "" });
-  const endpoint = testMode ? "/api/weldontest" : "/api/weldon";
+  const endpoint = "/api/weldon";
 
   const loadSession = useCallback(async (id: string) => {
     const response = await fetch(endpoint, {
@@ -217,8 +217,8 @@ export default function WeldonLive({ testMode = false }: { testMode?: boolean })
         />
         <div className={styles.restShade} aria-hidden="true" />
         <section className={styles.restMessage}>
-          <p>{testMode ? "Weldon Test" : "Weldon Live"}</p>
-          <h1>{testMode ? "Waiting for Phil to start the test live session" : "Weldon is taking a rest right now"}</h1>
+          <p>Weldon Live</p>
+          <h1>Weldon is taking a rest right now</h1>
           <Link href="/">Visit The Pipe Dream <Icon name="arrow" /></Link>
         </section>
       </main>
@@ -237,7 +237,6 @@ export default function WeldonLive({ testMode = false }: { testMode?: boolean })
         <div className={styles.liveBar}>
           <span className={styles.liveDot} aria-hidden="true" />
           <span>Weldon Live</span>
-          {testMode ? <span className={styles.testTag}>Phil’s test session</span> : null}
         </div>
 
         <header className={styles.hero}>
