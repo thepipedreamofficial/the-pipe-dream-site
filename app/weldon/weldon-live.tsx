@@ -230,7 +230,7 @@ export default function WeldonLive() {
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(stringValue(result.error) || "That suggestion could not be sent");
       setWildcardSent(true);
-      setNotice(`“${title}” is with the band. We’ll try it if we can.`);
+      setNotice(`“${title}” is with the band. We’ll try it if we can, or learn it for the next show.`);
       await loadSession(clientId).catch(() => undefined);
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "That suggestion could not be sent");
@@ -394,7 +394,7 @@ export default function WeldonLive() {
               <div>
                 <p>Don’t see your song?</p>
                 <h3>Try a wildcard request</h3>
-                <span>Send one song suggestion. The band will try it if they can.</span>
+                <span>The band will try it if they can, or they’ll learn it for the next show.</span>
               </div>
               {session.wildcardRequestedByYou || wildcardSent ? (
                 <div className={styles.wildcardConfirmation}>Your wildcard request is with the band.</div>
