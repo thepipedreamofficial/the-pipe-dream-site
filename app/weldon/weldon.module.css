@@ -432,3 +432,58 @@
   .liveDot,
   .loadingDot { animation: none; }
 }
+
+.wildcardRequest {
+  margin: 18px 0 0;
+  padding: 18px 14px;
+  display: grid;
+  gap: 16px;
+  border: 1px solid rgba(255, 196, 46, 0.32);
+  border-radius: 16px;
+  background: rgba(255, 196, 46, 0.06);
+}
+.wildcardRequest p {
+  margin: 0 0 4px;
+  color: #ffc42e;
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.wildcardRequest h3 { margin: 0 0 5px; font-size: 1.2rem; }
+.wildcardRequest > div > span { color: #b8afa8; font-size: 0.78rem; line-height: 1.45; }
+.wildcardRequest form { display: grid; gap: 11px; }
+.wildcardRequest label { display: grid; gap: 6px; color: #fff5db; font-size: 0.7rem; font-weight: 800; }
+.wildcardRequest label small { color: #918780; font-weight: 500; }
+.wildcardRequest input {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #4a4039;
+  border-radius: 11px;
+  color: white;
+  background: #15100d;
+  font: inherit;
+  font-size: 16px;
+}
+.wildcardRequest input:focus { outline: 2px solid #ffc42e; outline-offset: 2px; }
+.wildcardRequest button {
+  min-height: 50px;
+  padding: 11px 14px;
+  border: 0;
+  border-radius: 12px;
+  color: #1e1607;
+  background: #ffc42e;
+  font-weight: 900;
+}
+.wildcardRequest button:disabled { opacity: 0.48; }
+.wildcardConfirmation {
+  padding: 13px;
+  border-radius: 12px;
+  color: #dfffb0;
+  background: rgba(150, 213, 71, 0.12);
+  font-size: 0.78rem;
+  font-weight: 800;
+}

@@ -63,13 +63,20 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   const clientId = limitedHeader(request, "x-weldon-client-id", 128);
-  let input: { songId?: unknown; sessionId?: unknown };
+  let input: { requestType?: unknown; songId?: unknown; sessionId?: unknown; title?: unknown; artist?: unknown };
   try {
     input = await request.json();
   } catch {
     return Response.json({ error: "Choose a song to request" }, { status: 400, headers: NO_STORE_HEADERS });
   }
-  if ((typeof input.songId !== "number" && typeof input.songId !== "string") || String(input.songId).length > 80) {
+  const wildcard = input.requestType === "wildcard";
+  const title = typeof input.title === "string" ? input.title.trim().slice(0, 121) : "";
+  const artist = typeof input.artist === "string" ? input.artist.trim().slice(0, 121) : "";
+  if (wildcard) {
+    if (!title || title.length > 120 || artist.length > 120) {
+      return Response.json({ error: "Enter a valid song title and optional artist" }, { status: 400, headers: NO_STORE_HEADERS });
+    }
+  } else if ((typeof input.songId !== "number" && typeof input.songId !== "string") || String(input.songId).length > 80) {
     return Response.json({ error: "Choose a valid song" }, { status: 400, headers: NO_STORE_HEADERS });
   }
   const sessionId = typeof input.sessionId === "string" ? input.sessionId.trim().slice(0, 160) : "";
@@ -84,7 +91,9 @@ export async function POST(request: Request) {
         "Content-Type": "application/json",
         ...(clientId ? { "X-Weldon-Client-Id": clientId } : {}),
       },
-      body: JSON.stringify({ sessionId, songId: input.songId, visitorId: clientId }),
+      body: JSON.stringify(wildcard
+        ? { requestType: "wildcard", sessionId, title, artist, visitorId: clientId }
+        : { sessionId, songId: input.songId, visitorId: clientId }),
       signal: AbortSignal.timeout(8_000),
     });
     if (stagingOffline() && response.status >= 500) return stagingOfflineResponse("POST");

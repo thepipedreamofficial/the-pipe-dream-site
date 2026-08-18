@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import styles from "./weldon.module.css";
 
 type RequestableSong = {
@@ -17,6 +17,9 @@ type WeldonSession = {
   active: boolean;
   stagingOffline?: boolean;
   sessionId?: string;
+  requestsEnabled: boolean;
+  wildcardRequestsEnabled: boolean;
+  wildcardRequestedByYou: boolean;
   gig?: {
     name?: string;
     venue?: string;
@@ -102,6 +105,9 @@ function normalizeSession(value: unknown): WeldonSession {
     active,
     stagingOffline: nested.stagingOffline === true,
     sessionId: stringValue(nested.sessionId || nested.sessionKey || nested.gigStartedAt),
+    requestsEnabled: nested.requestsEnabled !== false,
+    wildcardRequestsEnabled: nested.wildcardRequestsEnabled === true,
+    wildcardRequestedByYou: nested.wildcardRequestedByYou === true,
     gig,
     songs,
   };
@@ -127,6 +133,10 @@ export default function WeldonLive() {
   const [session, setSession] = useState<WeldonSession | null>(null);
   const [requested, setRequested] = useState<Array<number | string>>([]);
   const [pendingSongId, setPendingSongId] = useState<number | string | null>(null);
+  const [wildcardTitle, setWildcardTitle] = useState("");
+  const [wildcardArtist, setWildcardArtist] = useState("");
+  const [wildcardPending, setWildcardPending] = useState(false);
+  const [wildcardSent, setWildcardSent] = useState(false);
   const [notice, setNotice] = useState("");
   const previousSessionId = useRef("");
   const requestContext = useRef({ clientId: "" });
@@ -145,6 +155,9 @@ export default function WeldonLive() {
     setSession(nextSession);
     if (previousSessionId.current && previousSessionId.current !== nextSession.sessionId) {
       setRequested([]);
+      setWildcardTitle("");
+      setWildcardArtist("");
+      setWildcardSent(false);
       setNotice("");
     }
     previousSessionId.current = nextSession.sessionId || "";
@@ -159,7 +172,7 @@ export default function WeldonLive() {
       try {
         await loadSession(id);
       } catch {
-        if (!stopped) setSession({ active: false, songs: [] });
+        if (!stopped) setSession({ active: false, requestsEnabled: false, wildcardRequestsEnabled: false, wildcardRequestedByYou: false, songs: [] });
       } finally {
         if (!stopped) timer = window.setTimeout(() => void poll(), POLL_INTERVAL);
       }
@@ -194,6 +207,35 @@ export default function WeldonLive() {
       setNotice(error instanceof Error ? error.message : "That request could not be sent");
     } finally {
       setPendingSongId(null);
+    }
+  }
+
+  async function requestWildcard(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const title = wildcardTitle.trim();
+    const artist = wildcardArtist.trim();
+    if (!title || wildcardPending || wildcardSent || session?.wildcardRequestedByYou) return;
+    setWildcardPending(true);
+    setNotice("");
+    const { clientId } = requestContext.current;
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(clientId ? { "X-Weldon-Client-Id": clientId } : {}),
+        },
+        body: JSON.stringify({ requestType: "wildcard", sessionId: session?.sessionId || "", title, artist }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(stringValue(result.error) || "That suggestion could not be sent");
+      setWildcardSent(true);
+      setNotice(`“${title}” is with the band. We’ll try it if we can.`);
+      await loadSession(clientId).catch(() => undefined);
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "That suggestion could not be sent");
+    } finally {
+      setWildcardPending(false);
     }
   }
 
@@ -297,8 +339,10 @@ export default function WeldonLive() {
           <div className={styles.requestHeading}>
             <div>
               <p>Your turn</p>
-              <h2>What should we play?</h2>
-              <span>Pick from songs the band can still work into the show.</span>
+              <h2>{session.requestsEnabled ? "What should we play?" : "Requests are paused"}</h2>
+              <span>{session.requestsEnabled
+                ? "Pick from songs the band can still work into the show."
+                : "The band can reopen requests later in the show."}</span>
             </div>
             <Image
               alt="Weldon rocking on an electric guitar"
@@ -308,7 +352,13 @@ export default function WeldonLive() {
             />
           </div>
 
-          {session.songs.length ? (
+          {!session.requestsEnabled ? (
+            <div className={styles.emptySongs}>
+              <Icon name="music" />
+              <strong>Song requests are paused right now</strong>
+              <span>Weldon is still here for venue details and tips.</span>
+            </div>
+          ) : session.songs.length ? (
             <ol className={styles.songList}>
               {session.songs.map((song) => {
                 const wasRequested = song.requested === true || requested.includes(song.id);
@@ -339,6 +389,45 @@ export default function WeldonLive() {
               <span>Weldon will keep checking as the show moves along.</span>
             </div>
           )}
+          {session.requestsEnabled && session.wildcardRequestsEnabled ? (
+            <div className={styles.wildcardRequest}>
+              <div>
+                <p>Don’t see your song?</p>
+                <h3>Try a wildcard request</h3>
+                <span>Send one song suggestion. The band will try it if they can.</span>
+              </div>
+              {session.wildcardRequestedByYou || wildcardSent ? (
+                <div className={styles.wildcardConfirmation}>Your wildcard request is with the band.</div>
+              ) : (
+                <form onSubmit={requestWildcard}>
+                  <label>
+                    <span>Song title</span>
+                    <input
+                      autoComplete="off"
+                      maxLength={120}
+                      onChange={(event) => setWildcardTitle(event.target.value)}
+                      placeholder="Song title"
+                      required
+                      value={wildcardTitle}
+                    />
+                  </label>
+                  <label>
+                    <span>Artist <small>optional</small></span>
+                    <input
+                      autoComplete="off"
+                      maxLength={120}
+                      onChange={(event) => setWildcardArtist(event.target.value)}
+                      placeholder="Artist"
+                      value={wildcardArtist}
+                    />
+                  </label>
+                  <button disabled={wildcardPending || !wildcardTitle.trim()} type="submit">
+                    {wildcardPending ? "Sending…" : "Send wildcard request"}
+                  </button>
+                </form>
+              )}
+            </div>
+          ) : null}
           <p className={styles.notice} aria-live="polite">{notice}</p>
         </section>
 
