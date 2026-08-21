@@ -46,6 +46,18 @@
   animation: pulse 1.8s ease-in-out infinite;
 }
 
+.waitingDot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #ffc42e;
+  box-shadow: 0 0 13px rgba(255, 196, 46, 0.75);
+  animation: pulse 2.4s ease-in-out infinite;
+}
+
+.waitingBar { color: #ffe49a; }
+
 .hero {
   position: relative;
   overflow: hidden;
@@ -72,6 +84,25 @@
 }
 
 .gigCard { padding: 20px; }
+.waitingGigCard {
+  border-color: rgba(255, 196, 46, 0.34);
+  background:
+    radial-gradient(circle at 100% 0, rgba(255, 196, 46, 0.14), transparent 12rem),
+    linear-gradient(155deg, rgba(34, 25, 20, 0.98), rgba(17, 12, 9, 0.99));
+}
+.countdown {
+  width: fit-content;
+  margin-top: 15px;
+  padding: 8px 11px;
+  display: block;
+  border: 1px solid rgba(255, 196, 46, 0.34);
+  border-radius: 999px;
+  color: #ffe49a;
+  background: rgba(255, 196, 46, 0.09);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
 .gigCard p,
 .requestHeading p,
 .tipCard p {
@@ -235,6 +266,47 @@
 .emptySongs span { font-size: 0.74rem; }
 .emptySongs .icon { color: var(--gold); font-size: 2rem; }
 .notice { min-height: 1.2rem; margin: 9px 2px 0; color: #c8ff67; font-size: 0.7rem; line-height: 1.4; }
+
+.waitingCard {
+  margin: 18px 14px 0;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  border: 1px solid rgba(255, 196, 46, 0.28);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(53, 38, 16, 0.96), rgba(20, 14, 9, 0.99));
+  scroll-margin-top: 12px;
+}
+.waitingCard img {
+  width: 96px;
+  height: auto;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.46));
+}
+.waitingCard p {
+  margin: 0 0 5px;
+  color: var(--gold);
+  font-size: 0.65rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.waitingCard h2 {
+  margin: 0;
+  color: white;
+  font-family: Impact, "Arial Black", sans-serif;
+  font-size: clamp(1.5rem, 6vw, 2.05rem);
+  line-height: 1;
+  text-transform: uppercase;
+}
+.waitingCard span {
+  margin-top: 8px;
+  display: block;
+  color: var(--muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
 
 .venueCard {
   padding: 20px;
@@ -431,6 +503,7 @@
 @media (prefers-reduced-motion: reduce) {
   .liveDot,
   .loadingDot { animation: none; }
+  .waitingDot { animation: none; }
 }
 
 .wildcardRequest {
