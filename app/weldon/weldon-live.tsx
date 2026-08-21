@@ -30,7 +30,8 @@ type WeldonSession = {
   songs: RequestableSong[];
 };
 
-const POLL_INTERVAL = 5_000;
+const ACTIVE_POLL_INTERVAL = 5_000;
+const INACTIVE_POLL_INTERVAL = 30_000;
 const CLIENT_ID_KEY = "weldon-live-client-id";
 const SONG_TITLE_COLLATOR = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
 
@@ -161,6 +162,7 @@ export default function WeldonLive() {
       setNotice("");
     }
     previousSessionId.current = nextSession.sessionId || "";
+    return nextSession;
   }, [endpoint]);
 
   useEffect(() => {
@@ -168,19 +170,40 @@ export default function WeldonLive() {
     requestContext.current = { clientId: id };
     let stopped = false;
     let timer = 0;
+    let polling = false;
+    const schedule = (delay: number) => {
+      window.clearTimeout(timer);
+      if (!stopped && !document.hidden) timer = window.setTimeout(() => void poll(), delay);
+    };
     const poll = async () => {
+      if (stopped || document.hidden || polling) return;
+      polling = true;
+      let active = false;
       try {
-        await loadSession(id);
+        active = (await loadSession(id)).active;
       } catch {
         if (!stopped) setSession({ active: false, requestsEnabled: false, wildcardRequestsEnabled: false, wildcardRequestedByYou: false, songs: [] });
       } finally {
-        if (!stopped) timer = window.setTimeout(() => void poll(), POLL_INTERVAL);
+        polling = false;
+        schedule(active ? ACTIVE_POLL_INTERVAL : INACTIVE_POLL_INTERVAL);
       }
     };
+    const refreshWhenAvailable = () => {
+      window.clearTimeout(timer);
+      if (!document.hidden) void poll();
+    };
+    const handleVisibility = () => {
+      if (document.hidden) window.clearTimeout(timer);
+      else refreshWhenAvailable();
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    window.addEventListener("online", refreshWhenAvailable);
     void poll();
     return () => {
       stopped = true;
       window.clearTimeout(timer);
+      document.removeEventListener("visibilitychange", handleVisibility);
+      window.removeEventListener("online", refreshWhenAvailable);
     };
   }, [loadSession]);
 
