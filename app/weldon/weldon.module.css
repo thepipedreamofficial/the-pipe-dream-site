@@ -90,7 +90,7 @@
     radial-gradient(circle at 100% 0, rgba(255, 196, 46, 0.14), transparent 12rem),
     linear-gradient(155deg, rgba(34, 25, 20, 0.98), rgba(17, 12, 9, 0.99));
 }
-.countdown {
+.expectedStart {
   width: fit-content;
   margin-top: 15px;
   padding: 8px 11px;

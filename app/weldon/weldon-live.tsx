@@ -197,15 +197,16 @@ function pollDelay(session: WeldonSession) {
   );
 }
 
-function countdownLabel(scheduledStartAt: string, now: number) {
+function expectedStartLabel(scheduledStartAt: string, fallbackStart: string) {
   const startTime = Date.parse(scheduledStartAt);
-  if (!Number.isFinite(startTime)) return "Weldon is standing by";
-  const remainingMinutes = Math.ceil((startTime - now) / 60_000);
-  if (remainingMinutes <= 0) return "The show starts any minute";
-  if (remainingMinutes < 60) return `Show starts in ${remainingMinutes} min`;
-  const hours = Math.floor(remainingMinutes / 60);
-  const minutes = remainingMinutes % 60;
-  return `Show starts in ${hours} hr${hours === 1 ? "" : "s"}${minutes ? ` ${minutes} min` : ""}`;
+  const displayTime = Number.isFinite(startTime)
+    ? new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Chicago",
+      hour: "numeric",
+      minute: "2-digit",
+    }).format(new Date(startTime))
+    : fallbackStart;
+  return displayTime ? `Expected start: ${displayTime}` : "Expected start time coming soon";
 }
 
 function clientIdFromBrowser() {
@@ -233,7 +234,6 @@ export default function WeldonLive() {
   const [wildcardPending, setWildcardPending] = useState(false);
   const [wildcardSent, setWildcardSent] = useState(false);
   const [notice, setNotice] = useState("");
-  const [currentTime, setCurrentTime] = useState(() => Date.now());
   const previousSessionId = useRef("");
   const requestContext = useRef({ clientId: "" });
   const endpoint = "/api/weldon";
@@ -259,12 +259,6 @@ export default function WeldonLive() {
     previousSessionId.current = nextSession.sessionId || "";
     return nextSession;
   }, [endpoint]);
-
-  useEffect(() => {
-    if (session?.phase !== "pre-show") return;
-    const timer = window.setInterval(() => setCurrentTime(Date.now()), 15_000);
-    return () => window.clearInterval(timer);
-  }, [session?.phase]);
 
   useEffect(() => {
     const id = clientIdFromBrowser();
@@ -399,6 +393,7 @@ export default function WeldonLive() {
 
   const gigTitle = session.gig?.name || "The Pipe Dream is live";
   const gigDetails = [session.gig?.venue, session.gig?.date, session.gig?.start].filter(Boolean).join(" · ");
+  const waitingGigDetails = [session.gig?.venue, session.gig?.date].filter(Boolean).join(" · ");
   const venueInfoText = session.gig?.venueInfoText || "";
   const venueInfoUrl = session.gig?.venueInfoUrl || "";
   const venueActionHref = venueInfoText ? "#venue-info" : venueInfoUrl;
@@ -427,8 +422,8 @@ export default function WeldonLive() {
           <section className={`${styles.gigCard} ${styles.waitingGigCard}`}>
             <p>Coming up</p>
             <h1>{session.gig?.name || "The Pipe Dream"}</h1>
-            {gigDetails ? <span>{gigDetails}</span> : null}
-            <strong className={styles.countdown}>{countdownLabel(session.scheduledStartAt || "", currentTime)}</strong>
+            {waitingGigDetails ? <span>{waitingGigDetails}</span> : null}
+            <strong className={styles.expectedStart}>{expectedStartLabel(session.scheduledStartAt || "", session.gig?.start || "")}</strong>
           </section>
 
           <nav aria-label="Weldon pre-show options" className={styles.actionGrid}>
